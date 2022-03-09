@@ -84,8 +84,7 @@
               <input class="form-check-input"
                      id="sendCatalogId"
                      type="checkbox"
-                     formControlName="sendCatalog"
-                     > Send me your catalog
+                     formControlName="sendCatalog"> Send me your catalog
             </label>
           </div>
         </div>
@@ -203,6 +202,11 @@
                   [title]="customerForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
                   [disabled]="!customerForm.valid">
             Save
+          </button>
+          <button class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="populateTestData()">
+            Test Data
           </button>
         </div>
       </div>
