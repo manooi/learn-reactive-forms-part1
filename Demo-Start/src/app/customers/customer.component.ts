@@ -4,6 +4,21 @@ import { Customer } from './customer';
 
 
 
+function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
+  const emailControl = c.get('email');
+  const confirmControl = c.get('confirmEmail');
+
+  if (emailControl.pristine || confirmControl.pristine) {
+    return null;
+  }
+
+  if (emailControl.value === confirmControl.value) {
+    return null;
+  }
+  return { 'match': true }; // add to error colelction of FormGroup, not FormControl!!
+}
+
+
 function ratingRange(c: AbstractControl): { [key: string]: boolean } | null {
   if (c.value !== null && (isNaN(c.value) || c.value < 1 || c.value > 5)) {
     return { 'range': true };
@@ -19,7 +34,6 @@ function ratingRangeWithParams(min: number, max: number): ValidatorFn {
     }
     return null;
   }
-
 }
 
 @Component({
@@ -36,11 +50,14 @@ export class CustomerComponent implements OnInit {
   ngOnInit(): void {
     this.customerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]],
-      lastName: ['', [Validators.required, Validators.minLength(50)]],
-      email: ['', [Validators.required, Validators.email]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
+      emailGroup: this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        confirmEmail: ['', Validators.required]
+      }, { validator: emailMatcher }),
       phone: '',
       notification: 'email',
-      rating: [null, ratingRangeWithParams(1,5)],
+      rating: [null, ratingRangeWithParams(1, 5)],
       sendCatalog: true,
     })
   }
